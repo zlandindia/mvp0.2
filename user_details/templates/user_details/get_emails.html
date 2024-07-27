@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select an Email</title>
+</head>
+<body>
+    <h1>Select an Email</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for email in emails %}
+            <input type="radio" name="email_id" value="{{ email.id }}"> {{ email.snippet }}<br>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
