@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-$0ukf4b!g8gnb8-j25(8kiu517i)r*zyg0qgpt1f=+$1!1r3cu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["actions.thinkingai.in", "*"]
+ALLOWED_HOSTS = ['actions.thinkingai.in','localhost','127.0.0.1']
 
 
 # Application definition
@@ -122,3 +122,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://actions.thinkingai.in',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://actions.thinkingai.in',
+    'https://subdomain.actions.thinkingai.in',
+]
