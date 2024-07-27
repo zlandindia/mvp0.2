@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-$0ukf4b!g8gnb8-j25(8kiu517i)r*zyg0qgpt1f=+$1!1r3cu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["actions.thinkingai.in", "*"]
 
 
 # Application definition
