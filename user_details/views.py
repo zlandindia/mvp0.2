@@ -87,12 +87,42 @@ def thank_you(request):
     return render(request, 'user_details/thank_you.html')
 
 def authorize(request):
-    """View to handle OAuth2 authorization."""
+    """View to handle OAuth2 authorization with Gmail API."""
     flow = InstalledAppFlow.from_client_secrets_file(
-    os.path.join(os.path.dirname(__file__), 'credentials.json'), SCOPES)
-    creds = flow.run_local_server(port=0)
+        os.path.join(os.path.dirname(__file__), 'credentials.json'), SCOPES)
+    
+    # Check if credentials are in the session
+    if 'credentials' in request.session:
+        creds = Credentials(**request.session['credentials'])
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        request.session['credentials'] = creds_to_dict(creds)
+        return redirect('get_emails')
+
+    # For local server, open the browser and complete the authorization
+    authorization_url, state = flow.authorization_url(
+        access_type='offline', 
+        include_granted_scopes='true'
+    )
+    
+    # Redirect the user to the authorization URL
+    return redirect(authorization_url)
+
+def callback(request):
+    """Callback view to handle the OAuth2 authorization response."""
+    state = request.GET.get('state')
+    flow = InstalledAppFlow.from_client_secrets_file(
+        os.path.join(os.path.dirname(__file__), 'credentials.json'), SCOPES)
+    
+    # Complete the authorization flow
+    flow.fetch_token(authorization_response=request.get_full_path())
+
+    creds = flow.credentials
     request.session['credentials'] = creds_to_dict(creds)
+    
+    # Redirect to the get_emails view
     return redirect('get_emails')
+
 
 def creds_to_dict(creds):
     """Convert OAuth2 credentials to a dictionary."""
