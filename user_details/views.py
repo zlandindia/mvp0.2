@@ -87,23 +87,19 @@ def thank_you(request):
     return render(request, 'user_details/thank_you.html')
 
 def authorize(request):
-    """View to handle OAuth2 authorization with Gmail API."""
+    """View to handle OAuth2 authorization."""
     flow = InstalledAppFlow.from_client_secrets_file(
         os.path.join(os.path.dirname(__file__), 'credentials.json'), SCOPES)
     
-    # Check if credentials are in the session
-    if 'credentials' in request.session:
-        creds = Credentials(**request.session['credentials'])
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        request.session['credentials'] = creds_to_dict(creds)
-        return redirect('get_emails')
-
-    # For local server, open the browser and complete the authorization
+    # Generate authorization URL with redirect URI
     authorization_url, state = flow.authorization_url(
-        access_type='offline', 
-        include_granted_scopes='true'
+        access_type='offline',
+        include_granted_scopes='true',
+        redirect_uri='http://localhost:8000/callback/'  # Ensure this matches the Google Cloud Console
     )
+    
+    # Redirect the user to the authorization URL
+    return redirect(authorization_url)
     
     # Redirect the user to the authorization URL
     return redirect(authorization_url)
